@@ -197,9 +197,10 @@ Override values when needed:
   -ModelDeploymentName "<deployment-name>"
 ```
 
-Use `-SubscriptionId` to narrow project discovery or `-ProjectId` when the
-project is not readable through the management plane. Creating a local azd
-environment does not create Azure resources.
+By default, project discovery uses the subscription currently selected in
+Azure CLI. Use `-SubscriptionId` to target a different subscription or
+`-ProjectId` when the project is not discoverable through the management
+plane. Creating a local azd environment does not create Azure resources.
 
 Validate project discovery without changing azd state or deploying:
 

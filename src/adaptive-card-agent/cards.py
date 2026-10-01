@@ -11,18 +11,95 @@ ADAPTIVE_ACTION_INVOKE = "adaptiveCard/action"
 
 
 def build_tasks_card(tasks: list[TaskItem], error: str | None = None) -> dict[str, Any]:
+    completed_count = sum(task.completed for task in tasks)
+    open_count = len(tasks) - completed_count
+
     body: list[dict[str, Any]] = [
         {
-            "type": "TextBlock",
-            "text": "Task board",
-            "weight": "Bolder",
-            "size": "Large",
+            "type": "Container",
+            "style": "emphasis",
+            "items": [
+                {
+                    "type": "ColumnSet",
+                    "columns": [
+                        {
+                            "type": "Column",
+                            "width": "auto",
+                            "verticalContentAlignment": "Center",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "✓",
+                                    "size": "ExtraLarge",
+                                    "weight": "Bolder",
+                                    "color": "Accent",
+                                    "horizontalAlignment": "Center",
+                                    "spacing": "None",
+                                }
+                            ],
+                        },
+                        {
+                            "type": "Column",
+                            "width": "stretch",
+                            "items": [
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Task board",
+                                    "weight": "Bolder",
+                                    "size": "Large",
+                                    "spacing": "None",
+                                },
+                                {
+                                    "type": "TextBlock",
+                                    "text": "Adaptive Card workspace",
+                                    "isSubtle": True,
+                                    "spacing": "None",
+                                },
+                            ],
+                        },
+                    ],
+                }
+            ],
+        },
+        {
+            "type": "ColumnSet",
+            "spacing": "Medium",
+            "columns": [
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": f"{open_count} open",
+                            "weight": "Bolder",
+                            "color": "Accent",
+                            "horizontalAlignment": "Center",
+                        }
+                    ],
+                },
+                {
+                    "type": "Column",
+                    "width": "stretch",
+                    "items": [
+                        {
+                            "type": "TextBlock",
+                            "text": f"{completed_count} completed",
+                            "weight": "Bolder",
+                            "color": "Good",
+                            "horizontalAlignment": "Center",
+                        }
+                    ],
+                },
+            ],
         },
         {
             "type": "TextBlock",
             "text": "Create, update, complete, or delete a task.",
             "wrap": True,
             "isSubtle": True,
+            "horizontalAlignment": "Center",
+            "spacing": "Small",
         },
     ]
 

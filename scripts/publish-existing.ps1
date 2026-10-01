@@ -156,6 +156,24 @@ function Get-AzdEnvironmentValues {
     return $values
 }
 
+function Test-AzdEnvironment {
+    param(
+        [Parameter(Mandatory)]
+        [string] $Name
+    )
+
+    $output = & azd env list --output json 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        throw "Could not list local azd environments."
+    }
+
+    $environments = @(
+        ($output -join "`n") |
+            ConvertFrom-Json -ErrorAction Stop
+    )
+    return [bool]($environments | Where-Object { $_.Name -ieq $Name })
+}
+
 function Resolve-ExistingProjectId {
     param(
         [Parameter(Mandatory)]
@@ -190,9 +208,10 @@ function Resolve-ExistingProjectId {
         ))
     }
     else {
+        # Use the active Azure CLI subscription by default. Enumerating every
+        # cached subscription can fail when one has an expired tenant token.
         $subscriptions = @(Invoke-AzJson @(
-            "account", "list",
-            "--query", "[?state=='Enabled'].{id:id,tenantId:tenantId,name:name}",
+            "account", "show",
             "--output", "json",
             "--only-show-errors"
         ))
@@ -225,7 +244,7 @@ function Resolve-ExistingProjectId {
     }
 
     if ($matches.Count -eq 0) {
-        throw "Could not find existing Foundry project '$($EndpointIdentity.ProjectName)' under account '$($EndpointIdentity.AccountName)' in the accessible Azure subscriptions. Supply -ProjectId or sign Azure CLI into the subscription that owns the project."
+        throw "Could not find existing Foundry project '$($EndpointIdentity.ProjectName)' under account '$($EndpointIdentity.AccountName)' in the active Azure CLI subscription. Supply -SubscriptionId or -ProjectId, or run 'az account set --subscription <id>'."
     }
     if ($matches.Count -gt 1) {
         throw "Multiple existing Foundry projects matched the endpoint. Supply -ProjectId or -SubscriptionId."
@@ -341,8 +360,13 @@ try {
         return
     }
 
-    & azd env select $EnvironmentName 2>$null
-    if ($LASTEXITCODE -ne 0) {
+    if (Test-AzdEnvironment $EnvironmentName) {
+        & azd env select $EnvironmentName
+        if ($LASTEXITCODE -ne 0) {
+            throw "Could not select local azd environment '$EnvironmentName'."
+        }
+    }
+    else {
         Write-Host "Creating local azd environment '$EnvironmentName' (no Azure resources are created)."
         & azd env new $EnvironmentName --subscription $SubscriptionId --no-prompt
         if ($LASTEXITCODE -ne 0) {

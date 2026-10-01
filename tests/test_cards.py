@@ -17,6 +17,9 @@ def test_build_tasks_card_contains_crud_actions() -> None:
     assert "toggle_task" in serialized
     assert "delete_task" in serialized
     assert card["version"] == "1.5"
+    assert "Adaptive Card workspace" in serialized
+    assert "1 open" in serialized
+    assert "0 completed" in serialized
 
 
 def test_parse_execute_action() -> None:
