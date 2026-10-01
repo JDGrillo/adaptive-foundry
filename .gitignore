@@ -1,0 +1,12 @@
+.azure/
+.env
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.py[cod]
+*.log
+src/adaptive-card-agent/data/tasks.json
+src/adaptive-card-agent/.appPackage.zip.azd-generated
+src/adaptive-card-agent/appPackage.zip
+src/adaptive-card-agent/TEAMS_APP_SETUP.md

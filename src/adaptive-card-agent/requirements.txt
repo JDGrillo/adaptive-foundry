@@ -1,0 +1,9 @@
+azure-ai-agentserver-activity==1.0.0b1
+microsoft-agents-hosting-core
+microsoft-agents-authentication-msal
+microsoft-agents-activity
+aiohttp>=3.9.0
+azure-identity>=1.17.0
+agent-framework-core==1.18.0
+agent-framework-foundry==1.13.0
+python-dotenv>=1.0.0

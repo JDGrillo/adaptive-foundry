@@ -1,0 +1,17 @@
+{
+  "include": [
+    "src/adaptive-card-agent",
+    "tests"
+  ],
+  "exclude": [
+    ".venv",
+    "src/adaptive-card-agent/.venv"
+  ],
+  "extraPaths": [
+    "src/adaptive-card-agent"
+  ],
+  "pythonVersion": "3.10",
+  "typeCheckingMode": "basic",
+  "venv": ".venv",
+  "venvPath": "."
+}
